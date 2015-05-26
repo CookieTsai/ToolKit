@@ -1,5 +1,6 @@
 CREATE EXTERNAL TABLE orderlog (
-    time STRING,
+	d STRING,
+    t STRING,
     uid STRING,
     pid STRING,
     cnt INT,
@@ -10,4 +11,4 @@ CREATE EXTERNAL TABLE orderlog (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ' '
 STORED AS TEXTFILE
-LOCATION '/user/cloudera/order';
+LOCATION '/user/cloudera/order2';

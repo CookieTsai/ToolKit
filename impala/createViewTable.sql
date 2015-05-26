@@ -1,5 +1,6 @@
 CREATE EXTERNAL TABLE viewlog (
-    time STRING,
+	d STRING,
+    t STRING,
     uid STRING,
     pid STRING,
     cat STRING,
@@ -9,4 +10,4 @@ CREATE EXTERNAL TABLE viewlog (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ' '
 STORED AS TEXTFILE
-LOCATION '/user/cloudera/view';
+LOCATION '/user/cloudera/view2';

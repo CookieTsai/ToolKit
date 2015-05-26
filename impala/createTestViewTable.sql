@@ -1,14 +1,13 @@
-CREATE EXTERNAL TABLE orderlog (
+CREATE EXTERNAL TABLE test_viewlog (
 	d STRING,
     t STRING,
     uid STRING,
     pid STRING,
-    cnt INT,
-    price INT,
+    cat STRING,
     erUid STRING,
     ip STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ' '
 STORED AS TEXTFILE
-LOCATION '/user/cloudera/order2';
+LOCATION '/user/cloudera/test_view2';

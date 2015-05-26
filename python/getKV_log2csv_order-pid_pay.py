@@ -2,7 +2,7 @@ import sys
 import csv
 import re
 
-index = {"ip":0,"time":1,"act":2,"name":3,"erUid":4,"keywords":5,"uid":6,"pid":7,"eturec":8,"cat":9,"plist":10}
+index = {"ip":0,"day":1,"time":2,"act":3,"name":4,"erUid":5,"keywords":6,"uid":7,"pid":8,"eturec":9,"cat":10,"plist":11}
 
 reader = csv.reader(sys.stdin)
 

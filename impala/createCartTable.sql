@@ -1,5 +1,6 @@
 CREATE EXTERNAL TABLE cartlog (
-    time STRING,
+	d STRING,
+    t STRING,
     uid STRING,
     pid STRING,
     cnt INT,
@@ -10,4 +11,4 @@ CREATE EXTERNAL TABLE cartlog (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ' '
 STORED AS TEXTFILE
-LOCATION '/user/cloudera/cart';
+LOCATION '/user/cloudera/cart2';
