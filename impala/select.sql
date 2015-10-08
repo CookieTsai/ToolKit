@@ -91,9 +91,45 @@ select count(1) from (
 select pid,count(1) from orderlog group by pid limit 1;
 
 # 取得商品分類
-select regexp_extract(cat,'^(.)',1) as mycat,count(1) as cnt
-from viewlog 
-group by mycat
+select t2.mycat,t2.cnt,t3.cnt
+from (
+	select t0.mycat,count(1) as cnt
+	from ( 
+		select regexp_extract(cat,'^(.)',1) as mycat
+		from viewlog
+	) t0 
+	group by t0.mycat
+) t2 
+left join (
+	select t1.mycat,count(1) as cnt
+	from ( 
+		select regexp_extract(cat,'^(.)',1) as mycat
+		from test_viewlog
+	) t1
+	group by t1.mycat
+) t3 on t2.mycat = t3.mycat
+
+
+# 上個月有紀錄的類別 / 下個月所有類別 23055/ 26914
+select t2.mycat,t2.cnt,t3.cnt
+from (
+	select t0.mycat,count(1) as cnt
+	from ( 
+		select cat as mycat
+		from viewlog
+	) t0 
+	group by t0.mycat
+) t2 
+left join (
+	select t1.mycat,count(1) as cnt
+	from ( 
+		select cat as mycat
+		from test_viewlog
+	) t1
+	group by t1.mycat
+) t3 on t2.mycat = t3.mycat
+where t3.mycat is not null
+order by t2.mycat
 
 
 select t1.pid,t1.mycat
@@ -104,16 +140,26 @@ from (
 ) t1
 group by t1.pid,t1.mycat
 
-
-select t0.pid,avg(t0.price)
+# 下個月已知價格的商品 30841 / 234360
+select *
 from (
-	select pid,price
-	from orderlog
-	union
-	select pid,price
-	from cartlog
-) t0
-group by t0.pid
+	select t0.pid,avg(t0.price) as av
+	from (
+		select pid,price
+		from orderlog
+		union all
+		select pid,price
+		from cartlog
+	) t0
+	group by t0.pid
+) t1
+left join (
+	select pid
+	from test_viewlog
+	group by pid
+) t2 on t1.pid = t2.pid
+where t2.pid is not null
+order by t1.av
 
 # 使用者 兩個月 veiw 的關係
 create table f3 (uid string, v1cnt bigint, v2cnt bigint, m0 double, uid2 string, ocnt bigint,m1 double);
@@ -199,12 +245,12 @@ and t1.uid in (
 )
 ========================== 以下是 pid ================================
 ## 
-select t0.pid,avg(t0.price)
+select t0.pid,count(1)
 from (
-	select pid,price
+	select pid
 	from orderlog
-	union
-	select pid,price
+	union all
+	select pid
 	from cartlog
 ) t0
 group by t0.pid
@@ -212,6 +258,17 @@ group by t0.pid
 
 select count(1)
 from cartlog
+
+## 
+select t0.eruid,t0.ip,count(1) as cnt
+from (
+	select eruid,ip,uid 
+	from orderlog 
+	group by eruid,ip,uid
+) t0
+group by t0.eruid,t0.ip
+order by cnt
+
 
 
 

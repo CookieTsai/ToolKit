@@ -22,26 +22,29 @@ drv <- JDBC("com.cloudera.impala.jdbc4.Driver","/Users/Mitake/Cookie/lib/impala/
 conn <- dbConnect(drv, "jdbc:impala://VMcdh01:21050")
 dbListTables(conn)
 
-myData <- dbGetQuery(conn, 
-                     "select t1.pid,t1.cnt as ordercnt,t2.cnt as viewcnt
+myData <- dbGetQuery(conn,"select t2.mycat,t2.cnt as cnt1,t3.cnt as cnt2
+                     from (
+                     select t0.mycat,count(1) as cnt
                      from ( 
-                     select pid,count(1) cnt 
-                     from orderlog 
-                     group by pid 
-                     ) t1 
-                     left join( 
-                     select pid,count(1) cnt 
-                     from viewlog 
-                     group by pid 
-                     ) t2 on 
-                     t1.pid = t2.pid 
-                     where t2.pid is not null and t1.pid <> 'NA'")
+                     select regexp_extract(cat,'^(.)',1) as mycat
+                     from viewlog
+                     ) t0 
+                     group by t0.mycat
+                     ) t2 
+                     left join (
+                     select t1.mycat,count(1) as cnt
+                     from ( 
+                     select regexp_extract(cat,'^(.)',1) as mycat
+                     from test_viewlog
+                     ) t1
+                     group by t1.mycat
+                     ) t3 on t2.mycat = t3.mycat")
 
 str(myData)
 
-model = lm(myData$ordercnt~myData$viewcnt)
+model = lm(myData$cnt1~myData$cnt2)
 # summary(model)
-plot(myData$ordercnt~myData$viewcnt)
+plot(myData$cnt1~myData$cnt2)
 abline(model, col="red")
 
 # 繪製 box plot 
